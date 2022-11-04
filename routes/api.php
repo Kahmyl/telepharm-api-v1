@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum'] ], function(){
+
+    // routes for doctors only
     Route::group(['middleware'=> 'is_doctor'], function(){
         Route::get('/products', function () {
             return 'products';

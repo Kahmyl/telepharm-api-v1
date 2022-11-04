@@ -17,6 +17,7 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|unique:users|email',
             'password' => 'required|string|confirmed',
+            'phone_number' => 'required',
             'is_doctor' => 'required|boolean'
         ]);
 
@@ -24,6 +25,7 @@ class UserController extends Controller
             'name' => $fields['name'],
             'email' => $fields['email'],
             'is_doctor' => $fields['is_doctor'],
+            'phone_number' => $fields['phone_number'],
             'password' => bcrypt($fields['password'])
 
         ]);
