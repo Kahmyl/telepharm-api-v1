@@ -4,12 +4,13 @@ namespace App\Enums;
 
 enum DurationEnum: string
 {
-    case ChestPain = "chest_pain";
-    case ChestDiscomfort = "chest_discomfort";
-    case ShortnessOfBreath = "shortness_of_breath";
-    case PainInNeck = "pain_in_the_neck";
-    case Dizziness = "dizziness";
-    case RacingHeartbeat = "racing_heartbeat";
-    case SlowHeartBeat = "slow_heartbeat";
-    case LightHeadedness = "light_headedness";
+    case OneToThreeDays = "one_to_three_days";
+    case FourToSixDays = "four_to_six_days";
+    case TwoWeeks = "two_weeks";
+    case ThreeWeeks = "three_weeks";
+    case OneMonth = "one_month";
+    case TwoMonths  = "two_months";
+    case ThreeMonths = "three_months";
+    case OverSixMonths = "over_six_months";
+
 }
