@@ -11,11 +11,7 @@ use Illuminate\Validation\Rules\Enum;
 
 class AppointmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
