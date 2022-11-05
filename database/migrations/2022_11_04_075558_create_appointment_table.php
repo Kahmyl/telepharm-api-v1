@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('drug_allergy')->nullable();
             $table->string('has_previous_condition');
             $table->string('previous_condition')->nullable();
-            $table->string('active')->nullable(true);
+            $table->string('active')->default(true);
             $table->bigInteger('doctor_id')->unsigned();
             $table->bigInteger('patient_id')->unsigned();
             // $table->foreignIdFor(User::class);

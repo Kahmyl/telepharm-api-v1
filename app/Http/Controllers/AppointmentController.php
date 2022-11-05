@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -16,13 +17,13 @@ class AppointmentController extends Controller
     {
         $user_id = $request->user()->id;
         if ($request->user()->is_doctor == 1){
-            $appointments = Appointment::where('doctor_id', $user_id)->get();
+            $appointments = Appointment::where('doctor_id', $user_id)->where('active', true)->get();
         }else {
-            $appointments = Appointment::where('patient_id', $user_id);
+            $appointments = Appointment::where('patient_id', $user_id)->where('active', true)->get();
         }
         $response = [
             "appointments" => $appointments,
-            "user" => $request->user()
+            "number_of_appointments" => $appointments->count()
         ];
         return response()->json($response, 200);
 
@@ -63,6 +64,15 @@ class AppointmentController extends Controller
         return response()->json(Appointment::find($id));
     }
 
-    
+
+    public function all_doctors(Request $request){
+        $doctors = User::where("is_doctor", 1)->get();
+        $response = [
+            "doctors" => $doctors
+        ];
+        return response()->json($response, 200);
+
+    }
+
 
 }
