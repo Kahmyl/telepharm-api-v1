@@ -23,6 +23,8 @@ class Appointment extends Model
         'has_previous_condition',
         'previous_condition',
         'active',
+        'doctor_id',
+        'patient_id'
     ];
 
     protected $casts = [

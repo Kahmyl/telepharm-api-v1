@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('appointment', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->string('symptoms');
             $table->string('duration');
@@ -25,9 +25,12 @@ return new class extends Migration
             $table->string('has_previous_condition');
             $table->string('previous_condition')->nullable();
             $table->string('active')->nullable(true);
-
-            $table->foreignIdFor(User::class);
+            $table->bigInteger('doctor_id')->unsigned();
+            $table->bigInteger('patient_id')->unsigned();
+            // $table->foreignIdFor(User::class);
             $table->timestamps();
+            $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::table('users', function (Blueprint $table) {
