@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum'] ], function(){
-    Route::post('/appointments/{doctor_id}', [AppointmentController::class, 'store']);
+    Route::post('/appointments', [AppointmentController::class, 'store']);
     Route::get('/appointments', [AppointmentController::class, 'index']);
     Route::get('/appointment/{id}', [AppointmentController::class, 'show']);
     Route::get('/doctors', [AppointmentController::class, 'all_doctors']);
@@ -24,7 +24,7 @@ Route::group(['middleware' => ['auth:sanctum'] ], function(){
 
     // routes for doctors only
     Route::group(['middleware'=> 'is_doctor'], function(){
-        Route::post('/doctor/appointment', [AppointmentController::class, 'accept_or_decline_appointment']);
+        Route::post('/doctor/appointment/{appointment_id}', [AppointmentController::class, 'accept_or_decline_appointment']);
     });
     
 

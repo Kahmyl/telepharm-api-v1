@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Enums\SymptomsEnum;
 use App\Enums\DurationEnum;
 use App\Enums\AppointmentStatusEnum;
+use App\Enums\AppointmentTypeEnum;
+
 
 
 
@@ -26,14 +28,15 @@ class Appointment extends Model
         'previous_condition',
         'status',
         'doctor_id',
-        'patient_id'
+        'patient_id',
+        'type'
     ];
 
     protected $casts = [
         'symptoms' => SymptomsEnum::class,
         'duration' => DurationEnum::class,
-        'status' => AppointmentStatusEnum::class
-
+        'status' => AppointmentStatusEnum::class,
+        'type' => AppointmentTypeEnum::class
     ];
   
     public function user()

@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Enums\AppointmentStatusEnum;
+use App\Enums\AppointmentTypeEnum;
 use Illuminate\Validation\Rules\Enum;
 
 class AppointmentController extends Controller
@@ -24,7 +25,7 @@ class AppointmentController extends Controller
 
         }else {
             $active_appointments = Appointment::where('patient_id', $user_id)->where('status', 'accepted')->get();
-            $pending_appointments = Appointment::where('patient_id', $user_id)->where('status', 'accepted')->get();
+            $pending_appointments = Appointment::where('patient_id', $user_id)->where('status', 'pending')->get();
         }       
         $response = [
             "active_appointments" => $active_appointments,
@@ -36,7 +37,7 @@ class AppointmentController extends Controller
 
     }
 
-    public function store(Request $request, $doctor_id)
+    public function store(Request $request)
     {
         $fields = $request->validate([
             'symptoms' => 'required|string',
@@ -47,6 +48,10 @@ class AppointmentController extends Controller
             'drug_allergy' => 'nullable|string',
             'has_previous_condition' => 'required|boolean',
             'previous_condition' => 'nullable|string',
+            'doctor_id' => 'required',
+
+            'type' => [new Enum(AppointmentTypeEnum::class)]
+
         ]);
 
         $appointment = Appointment::create([
@@ -56,7 +61,11 @@ class AppointmentController extends Controller
             'has_drug_allergy' => $fields['has_drug_allergy'],
             'has_previous_condition' => $fields['has_previous_condition'],
             'patient_id'=> $request->user()->id,
-            'doctor_id'=> $doctor_id
+            'doctor_id'=> $fields['doctor_id'],
+            'type' => $fields['type'],
+            'medication' => $fields['medication'] ?? null,
+            'drug_allergy' => $fields['drug_allergy'] ?? null,
+            'previous_condition' => $fields['previous_condition'] ?? null
             
         ]);
         $response = [
@@ -87,16 +96,25 @@ class AppointmentController extends Controller
             'status' => [new Enum(AppointmentStatusEnum::class)]
         ]);
 
-        $appointment = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id);
-        $appointment->update([
-            "status", $fields['status']
-        ]);
+        $appointment_exists = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id)->exists();
+        if ($appointment_exists){
+            
+            $appointment = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id)->first();
+            $appointment->update([
+                "status", $fields['status']
+            ]);
 
-        $response = [
-            "message" => "Appointment has been ". $fields['status']. " by Dr. ". $request->user()->name
-        ];
+            $response = [
+                "message" => "Appointment has been " . $fields['status'] . " by Dr. " . $request->user()->name
+            ];
 
-        return response()->json($response, 200);
+            return response()->json($response, 200);
+        }else{
+            return response()->json([
+                "message" => "Appointment with the id ". $appointment_id ." does not exist for Doctor ". $request->user()->name
+            ], 404);
+        }
+        
     }
 
 

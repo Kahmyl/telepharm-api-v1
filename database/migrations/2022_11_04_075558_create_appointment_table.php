@@ -25,17 +25,15 @@ return new class extends Migration
             $table->string('has_previous_condition');
             $table->string('previous_condition')->nullable();
             $table->string('status')->default('pending');
+            $table->string('type');
             $table->bigInteger('doctor_id')->unsigned();
             $table->bigInteger('patient_id')->unsigned();
-            // $table->foreignIdFor(User::class);
             $table->timestamps();
             $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('phone_number')->default('xxxxx');
-        });
+        
     }
 
     /**
