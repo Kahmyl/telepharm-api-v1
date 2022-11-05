@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum'] ], function(){
 
     // routes for doctors only
     Route::group(['middleware'=> 'is_doctor'], function(){
+        Route::post('/doctor/appointment', [AppointmentController::class, 'accept_or_decline_appointment']);
     });
     
 

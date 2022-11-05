@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Enums\AppointmentStatusEnum;
+use Illuminate\Validation\Rules\Enum;
 
 class AppointmentController extends Controller
 {
@@ -17,13 +19,18 @@ class AppointmentController extends Controller
     {
         $user_id = $request->user()->id;
         if ($request->user()->is_doctor == 1){
-            $appointments = Appointment::where('doctor_id', $user_id)->where('active', true)->get();
+            $active_appointments = Appointment::where('doctor_id', $user_id)->where('status', 'accepted')->get();
+            $pending_appointments = Appointment::where('doctor_id', $user_id)->where('status', 'pending')->get();
+
         }else {
-            $appointments = Appointment::where('patient_id', $user_id)->where('active', true)->get();
-        }
+            $active_appointments = Appointment::where('patient_id', $user_id)->where('status', 'accepted')->get();
+            $pending_appointments = Appointment::where('patient_id', $user_id)->where('status', 'accepted')->get();
+        }       
         $response = [
-            "appointments" => $appointments,
-            "number_of_appointments" => $appointments->count()
+            "active_appointments" => $active_appointments,
+            "pending_appointments" => $pending_appointments,
+            "number_of_active_appointments" => $active_appointments->count(),
+            "number_of_pending_appointments" => $pending_appointments->count()
         ];
         return response()->json($response, 200);
 
@@ -35,11 +42,11 @@ class AppointmentController extends Controller
             'symptoms' => 'required|string',
             'duration' => 'required|string',
             'is_on_medication' => 'required|boolean',
-            'medication' => 'string',
+            'medication' => 'nullable|string',
             'has_drug_allergy' => 'required|boolean',
-            'drug_allergy' => 'string',
+            'drug_allergy' => 'nullable|string',
             'has_previous_condition' => 'required|boolean',
-            'previous_condition' => 'string',
+            'previous_condition' => 'nullable|string',
         ]);
 
         $appointment = Appointment::create([
@@ -72,6 +79,24 @@ class AppointmentController extends Controller
         ];
         return response()->json($response, 200);
 
+    }
+
+    public function accept_or_decline_appointment(Request $request, $appointment_id){
+
+        $fields = $request->validate([
+            'status' => [new Enum(AppointmentStatusEnum::class)]
+        ]);
+
+        $appointment = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id);
+        $appointment->update([
+            "status", $fields['status']
+        ]);
+
+        $response = [
+            "message" => "Appointment has been ". $fields['status']. " by Dr. ". $request->user()->name
+        ];
+
+        return response()->json($response, 200);
     }
 
 

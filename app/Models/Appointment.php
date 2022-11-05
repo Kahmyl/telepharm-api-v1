@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\SymptomsEnum;
 use App\Enums\DurationEnum;
+use App\Enums\AppointmentStatusEnum;
+
 
 
 
@@ -22,7 +24,7 @@ class Appointment extends Model
         'drug_allergy',
         'has_previous_condition',
         'previous_condition',
-        'active',
+        'status',
         'doctor_id',
         'patient_id'
     ];
@@ -30,6 +32,8 @@ class Appointment extends Model
     protected $casts = [
         'symptoms' => SymptomsEnum::class,
         'duration' => DurationEnum::class,
+        'status' => AppointmentStatusEnum::class
+
     ];
   
     public function user()
