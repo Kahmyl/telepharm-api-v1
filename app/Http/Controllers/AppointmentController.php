@@ -113,5 +113,9 @@ class AppointmentController extends Controller
         
     }
 
+    public function x(){
+        return response()->json(["message"=>"successful"]);
+    }
+
 
 }
