@@ -12,7 +12,8 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users|email',
@@ -29,10 +30,14 @@ class UserController extends Controller
             'password' => bcrypt($fields['password'])
 
         ]);
-        
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
         $response = [
-            'user' => $user,    
+            'user' => $user,
+            'token' => $token
         ];
+
         return response()->json($response, 201);
     }
 
@@ -55,9 +60,10 @@ class UserController extends Controller
 
         // Check password
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response([
-                'message' => 'Invalid credentials'
-            ],
+            return response(
+                [
+                    'message' => 'Invalid credentials'
+                ],
                 401
             );
         }
@@ -73,5 +79,3 @@ class UserController extends Controller
 
     
 }
-
- 
