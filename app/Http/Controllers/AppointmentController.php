@@ -15,13 +15,15 @@ class AppointmentController extends Controller
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
+
         if ($request->user()->is_doctor == 1) {
-            $active_appointments = Appointment::where('doctor_id', $user_id)->where('status', 'accepted')->get();
-            $pending_appointments = Appointment::where('doctor_id', $user_id)->where('status', 'pending')->get();
+            $active_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'accepted')->get();
+            $pending_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'pending')->get();
         } else {
-            $active_appointments = Appointment::where('patient_id', $user_id)->where('status', 'accepted')->get();
-            $pending_appointments = Appointment::where('patient_id', $user_id)->where('status', 'pending')->get();
+            $active_appointments = Appointment::with('patient', 'doctor')->where('patient_id', $user_id)->where('status', 'accepted')->get();
+            $pending_appointments = Appointment::with('patient', 'doctor')->where('patient_id', $user_id)->where('status', 'pending')->get();
         }
+
         $response = [
             "active_appointments" => $active_appointments,
             "pending_appointments" => $pending_appointments,
@@ -71,7 +73,7 @@ class AppointmentController extends Controller
 
     public function show($id)
     {
-        return response()->json(Appointment::find($id));
+        return response()->json(Appointment::with('patient', 'doctor')->find($id));
     }
 
 
