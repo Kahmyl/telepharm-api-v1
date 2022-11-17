@@ -41,12 +41,12 @@ class UserController extends Controller
         return response()->json($response, 201);
     }
 
-    // public function logout(Request $request){
-    //     auth()->user()->tokens()->delete();
-    //     return [
-    //         'message' => 'Logged out'
-    //     ];
-    // }
+    public function logout(Request $request){
+        $request->user()->tokens()->delete();
+        return [
+            'message' => 'Logged out'
+        ];
+    }
 
     public function login(Request $request)
     {

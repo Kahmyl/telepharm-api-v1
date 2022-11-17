@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth:sanctum'] ], function(){
     Route::get('/appointment/{id}', [AppointmentController::class, 'show']);
     Route::get('/doctors', [AppointmentController::class, 'all_doctors']);
     Route::get('/auth', [AppointmentController::class, 'x']);
+    Route::post('/logout', [UserController::class, 'logout']);
 
 
 

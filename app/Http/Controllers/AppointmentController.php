@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\User;
+use Google_Client;
+use Google_Calendar;
+
+
 use Illuminate\Http\Request;
 use App\Enums\AppointmentStatusEnum;
 use App\Enums\AppointmentTypeEnum;
@@ -12,10 +16,12 @@ use Illuminate\Validation\Rules\Enum;
 class AppointmentController extends Controller
 {
 
+   
+
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
-
+        
         if ($request->user()->is_doctor == 1) {
             $active_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'accepted')->get();
             $pending_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'pending')->get();
@@ -93,13 +99,13 @@ class AppointmentController extends Controller
             'status' => [new Enum(AppointmentStatusEnum::class)]
         ]);
 
-        $appointment_exists = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id)->exists();
+        $appointment_exists = Appointment::where("id", $appointment_id)->where("status", "pending")->where("doctor_id", $request->user()->id)->exists();
         if ($appointment_exists) {
 
-            $appointment = Appointment::where("id", $appointment_id)->where("doctor_id", $request->user()->id)->first();
-            $appointment->update([
-                "status", $fields['status']
+            Appointment::where("id", $appointment_id)->where("status", "pending")->where("doctor_id", $request->user()->id)->update([
+                'status'=> $fields['status']
             ]);
+            
 
             $response = [
                 "message" => "Appointment has been " . $fields['status'] . " by Dr. " . $request->user()->name
@@ -108,7 +114,7 @@ class AppointmentController extends Controller
             return response()->json($response, 200);
         } else {
             return response()->json([
-                "message" => "Appointment with the id " . $appointment_id . " does not exist for Doctor " . $request->user()->name
+                "message" => "Pending appointment with the id " . $appointment_id . " does not exist for Doctor " . $request->user()->name
             ], 404);
         }
     }
