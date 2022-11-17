@@ -18,10 +18,10 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'symptoms', 
+        'symptoms',
         'duration',
         'is_on_medication',
-        'medication', 
+        'medication',
         'has_drug_allergy',
         'drug_allergy',
         'has_previous_condition',
@@ -29,7 +29,9 @@ class Appointment extends Model
         'status',
         'doctor_id',
         'patient_id',
-        'type'
+        'type',
+        'date',
+        'time'
     ];
 
     protected $casts = [
@@ -38,19 +40,19 @@ class Appointment extends Model
         'status' => AppointmentStatusEnum::class,
         'type' => AppointmentTypeEnum::class
     ];
-  
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function patient(){
+    public function patient()
+    {
         return $this->belongsTo(User::class, 'patient_id', 'id');
     }
 
-    public function doctor(){
+    public function doctor()
+    {
         return $this->belongsTo(User::class, 'doctor_id', 'id');
     }
-
-
 }
