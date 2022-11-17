@@ -12,7 +12,6 @@ use App\Enums\AppointmentTypeEnum;
 
 
 
-
 class Appointment extends Model
 {
     use HasFactory;
