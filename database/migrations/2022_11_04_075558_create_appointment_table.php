@@ -26,14 +26,14 @@ return new class extends Migration
             $table->string('previous_condition')->nullable();
             $table->string('status')->default('pending');
             $table->string('type');
+            $table->date('date');
+            $table->string('time');
             $table->bigInteger('doctor_id')->unsigned();
             $table->bigInteger('patient_id')->unsigned();
             $table->timestamps();
             $table->foreign('doctor_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
         });
-
-        
     }
 
     /**

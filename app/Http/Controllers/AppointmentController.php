@@ -16,12 +16,12 @@ use Illuminate\Validation\Rules\Enum;
 class AppointmentController extends Controller
 {
 
-   
+
 
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
-        
+
         if ($request->user()->is_doctor == 1) {
             $active_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'accepted')->get();
             $pending_appointments = Appointment::with('patient', 'doctor')->where('doctor_id', $user_id)->where('status', 'pending')->get();
@@ -51,9 +51,9 @@ class AppointmentController extends Controller
             'has_previous_condition' => 'required|boolean',
             'previous_condition' => 'nullable|string',
             'doctor_id' => 'required',
-
+            'date' => 'required',
+            'time' => 'required',
             'type' => [new Enum(AppointmentTypeEnum::class)]
-
         ]);
 
         $appointment = Appointment::create([
@@ -67,7 +67,9 @@ class AppointmentController extends Controller
             'type' => $fields['type'],
             'medication' => $fields['medication'] ?? null,
             'drug_allergy' => $fields['drug_allergy'] ?? null,
-            'previous_condition' => $fields['previous_condition'] ?? null
+            'previous_condition' => $fields['previous_condition'] ?? null,
+            'date' => $fields['date'],
+            'time' => $fields['time']
 
         ]);
         $response = [
@@ -103,9 +105,9 @@ class AppointmentController extends Controller
         if ($appointment_exists) {
 
             Appointment::where("id", $appointment_id)->where("status", "pending")->where("doctor_id", $request->user()->id)->update([
-                'status'=> $fields['status']
+                'status' => $fields['status']
             ]);
-            
+
 
             $response = [
                 "message" => "Appointment has been " . $fields['status'] . " by Dr. " . $request->user()->name
