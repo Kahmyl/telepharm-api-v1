@@ -14,22 +14,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Protected Routes
-Route::group(['middleware' => ['auth:sanctum'] ], function(){
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/appointments', [AppointmentController::class, 'store']);
     Route::get('/appointments', [AppointmentController::class, 'index']);
     Route::get('/appointment/{id}', [AppointmentController::class, 'show']);
     Route::get('/doctors', [AppointmentController::class, 'all_doctors']);
-    Route::get('/auth', [AppointmentController::class, 'x']);
+    Route::get('/auth', [UserController::class, 'getUser']);
 
 
 
     // routes for doctors only
-    Route::group(['middleware'=> 'is_doctor'], function(){
+    Route::group(['middleware' => 'is_doctor'], function () {
         Route::post('/doctor/appointment/{appointment_id}', [AppointmentController::class, 'accept_or_decline_appointment']);
     });
-    
-
 });
 
 Route::resource('resource', UserController::class);
-

@@ -77,5 +77,16 @@ class UserController extends Controller
         return response($response, 200);
     }
 
-    
+    public function getUser(Request $request)
+    {
+
+        $user_id = $request->user()->id;
+        $user = User::where('id', $user_id)->first();
+
+        $response = [
+            'user' => $user,
+        ];
+
+        return response($response, 200);
+    }
 }
